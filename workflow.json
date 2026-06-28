@@ -1,0 +1,205 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7c511b15-2e12-435c-b76d-6238279541e9",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://v6.exchangerate-api.com/v6/API-KEY/latest/BRL",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "60600f81-d7d3-4e09-985a-0a24878f1ab6",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ba3619f3-1735-4141-ac86-00297acd0e64",
+              "name": "Data",
+              "value": "={{ $now.format('dd/MM/yyyy HH:mm') }}",
+              "type": "string"
+            },
+            {
+              "id": "5e2136b6-c510-4277-8dcc-c89d231acc6e",
+              "name": "Dólar",
+              "value": "={{ (1 / $json.conversion_rates.USD).toFixed(2) }}",
+              "type": "string"
+            },
+            {
+              "id": "ceca518f-9bcc-4d47-8c6e-12a5b3afa100",
+              "name": "Euro",
+              "value": "={{ (1 / $json.conversion_rates.EUR).toFixed(2) }}",
+              "type": "string"
+            },
+            {
+              "id": "2c9874b3-db02-4fc2-9a34-911743e30978",
+              "name": "Libra",
+              "value": "={{ (1 / $json.conversion_rates.GBP).toFixed(2) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "80878a11-995e-455a-bc31-a32d76d957c4",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Cotacao_BRL-USD-EUR-GBP",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "Data"
+          ],
+          "schema": [
+            {
+              "id": "Data",
+              "displayName": "Data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Dólar",
+              "displayName": "Dólar",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Euro",
+              "displayName": "Euro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Libra",
+              "displayName": "Libra",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        624,
+        0
+      ],
+      "id": "7bb84066-0e36-4315-8cb7-b2e52978b0f0",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XNL7l5ctQdRbR7yb",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3a8c647e-1459-4dd8-8d75-64be6bce12b7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "33c80607f788f0b654a04a7b3b19985a5267bfff4ba87e3680244a0c11ac8627"
+  },
+  "nodeGroups": [],
+  "id": "6hlqKIUWqpcKO8x6",
+  "tags": []
+}
